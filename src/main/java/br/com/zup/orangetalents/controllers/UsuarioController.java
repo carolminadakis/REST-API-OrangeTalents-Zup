@@ -10,9 +10,11 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -45,15 +47,30 @@ public class UsuarioController {
 	//FAZ A VALIDAÇÃO DAS INFORMAÇÕES E O CADASTRAMENTO NO BANCO DE DADOS
 	@PostMapping			
 	@Transactional
-	public ResponseEntity<CadastroUsuario> cadastro(@Valid @RequestBody CadastroUsuario usuario) {
+	public ResponseEntity<CadastroUsuario> salvaCadastro(@Valid @RequestBody CadastroUsuario usuario) {
 		if(usuario == null) {
 			return ResponseEntity.badRequest().build();
 		} ur.save(usuario);
 		return ResponseEntity.status(HttpStatus.CREATED).body(usuario);
 	}
 	
-	//CRIAR MÉTODO PUT
+	//ALTERA AS INFORMAÇÕES DE CADASTRO EXISTENTE
+	@PutMapping
+	@Transactional
+	public ResponseEntity<CadastroUsuario> atualizaCadastro(@Valid @RequestBody CadastroUsuario usuarioAtualizado) {
+		if(usuarioAtualizado == null) {
+			return ResponseEntity.badRequest().build();
+		} ur.save(usuarioAtualizado);
+		return ResponseEntity.status(HttpStatus.OK).body(usuarioAtualizado);
+	}
 	
 	
-	//CRIAR MÉTODO DELETE
+	//DELETA CADASTRO DE USUÁRIO E RETORNA NO CONTENT COMO CONFIRMAÇÃO
+	@DeleteMapping("/{cpf}")
+	public ResponseEntity<CadastroUsuario> deletaCadastro(@PathVariable @Valid @RequestBody String cpf) {
+		if(cpf == null) {
+			return ResponseEntity.badRequest().build();
+		} ur.deleteById(cpf);
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+	}
 }

@@ -28,7 +28,7 @@ public class CadastroUsuario {
 	@Email
 	private String email;
 	
-	@JsonFormat(pattern="dd/mm/yyyy") //verificar validação
+	@JsonFormat(pattern="dd/mm/yyyy")
 	private Date nascimento;
 	
 	@ManyToOne
@@ -79,7 +79,7 @@ public class CadastroUsuario {
 		return true;
 	}
 
-	
+	//GETTTERS E SETTERS
 	public String getCpf() {
 		return cpf;
 	}

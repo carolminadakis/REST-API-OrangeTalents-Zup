@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,7 +22,6 @@ import br.com.zup.orangetalents.repository.VacinaRepository;
 @RestController
 @RequestMapping("/cadastrovacinacao")
 public class VacinacaoController {
-	
 	
 	@Autowired
 	VacinaRepository vr;
@@ -42,7 +42,7 @@ public class VacinacaoController {
 	//SALVA O CADASTRAMENTO DE VACINAÇÃO
 	@PostMapping
 	@Transactional
-	public ResponseEntity<CadastroAplicacaoVacina> salvar(@Valid @RequestBody CadastroAplicacaoVacina registroVacinacao) {
+	public ResponseEntity<CadastroAplicacaoVacina> salva(@Valid @RequestBody CadastroAplicacaoVacina registroVacinacao) {
 		if(registroVacinacao == null) {
 			return ResponseEntity.badRequest().build();
 			
@@ -50,8 +50,14 @@ public class VacinacaoController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(registroVacinacao);
 	}
 	
-	//CRIAR MÉTODO PUT
-	
-	
-
+	//ALTERA O CADASTRO DE VACINAÇÃO
+	@PutMapping
+	@Transactional
+	public ResponseEntity<CadastroAplicacaoVacina> atualizaVacinacao(@Valid @RequestBody CadastroAplicacaoVacina atualizaVacinacao) {
+		if(atualizaVacinacao == null) {
+			return ResponseEntity.badRequest().build();
+			
+		} vr.save(atualizaVacinacao);
+		return ResponseEntity.status(HttpStatus.OK).body(atualizaVacinacao);
+	}
 }

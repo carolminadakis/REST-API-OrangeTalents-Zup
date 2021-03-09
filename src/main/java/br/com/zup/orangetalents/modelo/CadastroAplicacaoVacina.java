@@ -15,11 +15,11 @@ import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-
 @Entity
 @Table(name= "cadastro_vacinacao")
 public class CadastroAplicacaoVacina {
 
+	//ATRIBUTOS E ANOTAÇÕES
 	@Id
 	@GeneratedValue (strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -31,11 +31,12 @@ public class CadastroAplicacaoVacina {
 	@NotBlank(message = "Campo obrigatório!")
 	private String email;
 	
+	//CHAVE ESTRANGEIRA
 	@OneToMany
 	@JoinColumn(name = "usuario_cpf")
 	private List<CadastroUsuario> usuario;
 	
-
+	//HASHCODE
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -43,6 +44,7 @@ public class CadastroAplicacaoVacina {
 		result = prime * result + ((vacina == null) ? 0 : vacina.hashCode());
 		return result;
 	}
+	//EQUALS
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -59,40 +61,35 @@ public class CadastroAplicacaoVacina {
 			return false;
 		return true;
 	}
+	//GETTERS E SETTERS
 	public Long getId() {
 		return id;
 	}
 	public void setId(Long id) {
 		this.id = id;
 	}
-
 	public String getVacina() {
 		return vacina;
 	}
 	public void setVacina(String vacina) {
 		this.vacina = vacina;
 	}
-
 	public Date getVacinacao() {
 		return vacinacao;
 	}
 	public void setVacinacao(Date vacinacao) {
 		this.vacinacao = vacinacao;
 	}
-
 	public String getEmail() {
 		return email;
 	}
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
 	public List<CadastroUsuario> getUsuario() {
 		return usuario;
 	}
-	
 	public void setUsuario(List<CadastroUsuario> usuario) {
 		this.usuario = usuario;
 	}
-	
 }
