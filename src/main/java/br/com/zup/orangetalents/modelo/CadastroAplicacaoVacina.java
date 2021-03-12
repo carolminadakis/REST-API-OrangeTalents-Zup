@@ -34,7 +34,7 @@ public class CadastroAplicacaoVacina {
 	//CHAVE ESTRANGEIRA
 	@OneToMany
 	@JoinColumn(name = "usuario_cpf")
-	private List<CadastroUsuario> usuario;
+	private List<Usuario> usuario;
 	
 	//HASHCODE
 	@Override
@@ -86,10 +86,10 @@ public class CadastroAplicacaoVacina {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public List<CadastroUsuario> getUsuario() {
+	public List<Usuario> getUsuario() {
 		return usuario;
 	}
-	public void setUsuario(List<CadastroUsuario> usuario) {
+	public void setUsuario(List<Usuario> usuario) {
 		this.usuario = usuario;
 	}
 }

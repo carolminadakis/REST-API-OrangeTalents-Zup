@@ -1,7 +1,6 @@
 package br.com.zup.orangetalents.modelo;
 
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -15,12 +14,13 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 
 @Entity
-public class CadastroUsuario {
+public class Usuario {
 
 	@NotBlank(message = "Campo obrigatório!")
 	@Id
 	@CPF
-	private String cpf;
+	private Long cpf;
+	
 	@NotBlank(message = "Campo obrigatório!")
 	private String nome;
 	
@@ -34,19 +34,17 @@ public class CadastroUsuario {
 	@ManyToOne
 	private CadastroAplicacaoVacina vacina;
 	
-	public CadastroUsuario() {
+	public Usuario() {
 		
 	}
 	
-	public CadastroUsuario(@NotBlank @CPF String cpf, @NotBlank String nome, @NotBlank @Email String email,
+	public Usuario(@NotBlank @CPF Long cpf, @NotBlank String nome, @NotBlank @Email String email,
 			@NotBlank Date nascimento) {
 		this.cpf = cpf;
 		this.nome = nome;
 		this.email = email;
 		this.nascimento = nascimento;
 	}
-	
-	
 	
 	@Override
 	public int hashCode() {
@@ -65,7 +63,7 @@ public class CadastroUsuario {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		CadastroUsuario other = (CadastroUsuario) obj;
+		Usuario other = (Usuario) obj;
 		if (cpf == null) {
 			if (other.cpf != null)
 				return false;
@@ -80,10 +78,10 @@ public class CadastroUsuario {
 	}
 
 	//GETTTERS E SETTERS
-	public String getCpf() {
+	public Long getCpf() {
 		return cpf;
 	}
-	public void setCpf(String cpf) {
+	public void setCpf(Long cpf) {
 		this.cpf = cpf;
 	}
 	public String getNome() {
