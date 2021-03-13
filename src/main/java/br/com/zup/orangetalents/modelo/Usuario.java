@@ -32,7 +32,7 @@ public class Usuario {
 	private Date nascimento;
 	
 	@ManyToOne
-	private CadastroAplicacaoVacina vacina;
+	private Vacinacao vacina;
 	
 	public Usuario() {
 		

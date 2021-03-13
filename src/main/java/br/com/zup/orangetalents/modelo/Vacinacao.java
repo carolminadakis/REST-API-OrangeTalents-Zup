@@ -17,7 +17,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 @Table(name= "cadastro_vacinacao")
-public class CadastroAplicacaoVacina {
+public class Vacinacao {
 
 	//ATRIBUTOS E ANOTAÇÕES
 	@Id
@@ -53,7 +53,7 @@ public class CadastroAplicacaoVacina {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		CadastroAplicacaoVacina other = (CadastroAplicacaoVacina) obj;
+		Vacinacao other = (Vacinacao) obj;
 		if (vacina == null) {
 			if (other.vacina != null)
 				return false;

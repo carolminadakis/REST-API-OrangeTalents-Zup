@@ -1,63 +1,49 @@
 package br.com.zup.orangetalents.controllers;
 
 import java.util.List;
-
-import javax.transaction.Transactional;
 import javax.validation.Valid;
-
+import br.com.zup.orangetalents.service.VacinacaoService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import br.com.zup.orangetalents.modelo.CadastroAplicacaoVacina;
-import br.com.zup.orangetalents.repository.VacinaRepository;
+import br.com.zup.orangetalents.modelo.Vacinacao;
 
 @RestController
-@RequestMapping("/cadastrovacinacao")
+@RequestMapping("/vacinacoes")
 public class VacinacaoController {
 	
 	@Autowired
-	VacinaRepository vr;
+	VacinacaoService vacinacaoService;
 	
 	//EXIBE LISTAGEM DE CADASTRAMENTO DE VACINAÇÃO
 	@GetMapping
-	public List<CadastroAplicacaoVacina> lista() {
-		return vr.findAll();		
+	@ResponseStatus(HttpStatus.OK)
+	public List<Vacinacao> listar() {
+		return vacinacaoService.buscarTodas();
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<CadastroAplicacaoVacina> buscaPorVacina(@PathVariable @RequestBody CadastroAplicacaoVacina id) {
-		if(id == null) {
-		return ResponseEntity.badRequest().build();
-		} return ResponseEntity.ok(id);
+	@ResponseStatus(HttpStatus.OK)
+	public Vacinacao buscarPorVacinacao(@PathVariable Long id) {
+		return vacinacaoService.buscarPorId(id);
 	}
 	
 	//SALVA O CADASTRAMENTO DE VACINAÇÃO
 	@PostMapping
-	@Transactional
-	public ResponseEntity<CadastroAplicacaoVacina> salva(@Valid @RequestBody CadastroAplicacaoVacina registroVacinacao) {
-		if(registroVacinacao == null) {
-			return ResponseEntity.badRequest().build();
-			
-		} vr.save(registroVacinacao);
-		return ResponseEntity.status(HttpStatus.CREATED).body(registroVacinacao);
+	@ResponseStatus(HttpStatus.CREATED)
+	public Vacinacao salvar(@Valid @RequestBody Vacinacao vacinacao) {
+		return vacinacaoService.salvar(vacinacao);
 	}
 	
 	//ALTERA O CADASTRO DE VACINAÇÃO
 	@PutMapping
-	@Transactional
-	public ResponseEntity<CadastroAplicacaoVacina> atualizaVacinacao(@Valid @RequestBody CadastroAplicacaoVacina atualizaVacinacao) {
-		if(atualizaVacinacao == null) {
-			return ResponseEntity.badRequest().build();
-			
-		} vr.save(atualizaVacinacao);
-		return ResponseEntity.status(HttpStatus.OK).body(atualizaVacinacao);
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public Vacinacao atualizar(@PathVariable Long id, @Valid @RequestBody Vacinacao vacinacao) {
+
+		Vacinacao vacinacaoAtual = vacinacaoService.buscarPorId(id);
+		BeanUtils.copyProperties(vacinacao, vacinacaoAtual, "id");
+		return vacinacaoService.salvar(vacinacaoAtual);
 	}
 }
