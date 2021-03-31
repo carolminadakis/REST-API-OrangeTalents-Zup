@@ -1,15 +1,12 @@
 package br.com.zup.orangetalents.controllers;
 
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-
 import java.util.List;
 
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,60 +14,56 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
-import br.com.zup.orangetalents.modelo.CadastroUsuario;
-import br.com.zup.orangetalents.repository.UsuariosRepository;
+import br.com.zup.orangetalents.modelo.Usuario;
+import br.com.zup.orangetalents.service.UsuarioService;
 
 @RestController
-@RequestMapping("/cadastrousuarios")
+@RequestMapping("/usuarios")
 public class UsuarioController {
 	
 	@Autowired
-	UsuariosRepository ur;
+	UsuarioService usuarioService;
 	
 	//LISTA TODOS OS USUÁRIOS CADASTRADOS
 	@GetMapping
-	public List<CadastroUsuario> lista() {
-		return ur.findAll();	
+	@ResponseStatus(HttpStatus.OK)
+	public List<Usuario> lista() {
+		return usuarioService.buscarTodos();	
 		
 	}
 	
 	//BUSCA USUÁRIO POR CPF NO BANCO DE DADOS
 	@GetMapping("/{cpf}")
-	public CadastroUsuario buscaPorCpf(@PathVariable @Valid @RequestBody String cpf) {
-		return ur.findById(cpf).orElseThrow(() -> new ResponseStatusException(NOT_FOUND,
-												"Usuário não encontrado"));			
+	@ResponseStatus(HttpStatus.OK)
+	public Usuario buscaPorCpf(@PathVariable @Valid @RequestBody Long cpf) {
+		return usuarioService.buscarPorCpf(cpf);		
 	}
 	
 	//FAZ A VALIDAÇÃO DAS INFORMAÇÕES E O CADASTRAMENTO NO BANCO DE DADOS
 	@PostMapping			
-	@Transactional
-	public ResponseEntity<CadastroUsuario> salvaCadastro(@Valid @RequestBody CadastroUsuario usuario) {
-		if(usuario == null) {
-			return ResponseEntity.badRequest().build();
-		} ur.save(usuario);
-		return ResponseEntity.status(HttpStatus.CREATED).body(usuario);
+	@ResponseStatus(HttpStatus.CREATED)
+	public Usuario salvaCadastro(@Valid @RequestBody Usuario usuario) {
+		return usuarioService.salvar(usuario);
 	}
 	
 	//ALTERA AS INFORMAÇÕES DE CADASTRO EXISTENTE
 	@PutMapping
-	@Transactional
-	public ResponseEntity<CadastroUsuario> atualizaCadastro(@Valid @RequestBody CadastroUsuario usuarioAtualizado) {
-		if(usuarioAtualizado == null) {
-			return ResponseEntity.badRequest().build();
-		} ur.save(usuarioAtualizado);
-		return ResponseEntity.status(HttpStatus.OK).body(usuarioAtualizado);
+	@ResponseStatus(HttpStatus.OK)
+	public Usuario atualizaCadastro(@PathVariable Long cpf, @Valid @RequestBody Usuario usuario) {
+		
+		Usuario usuarioAtual = usuarioService.buscarPorCpf(cpf);
+		BeanUtils.copyProperties(usuario, usuarioAtual, "cpf");
+		return usuarioService.salvar(usuarioAtual);
 	}
 	
 	
 	//DELETA CADASTRO DE USUÁRIO E RETORNA NO CONTENT COMO CONFIRMAÇÃO
 	@DeleteMapping("/{cpf}")
-	public ResponseEntity<CadastroUsuario> deletaCadastro(@PathVariable @Valid @RequestBody String cpf) {
-		if(cpf == null) {
-			return ResponseEntity.badRequest().build();
-		} ur.deleteById(cpf);
-		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void deletaCadastro(@PathVariable Long cpf) {
+		usuarioService.deletar(cpf);
 	}
 }
